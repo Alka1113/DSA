@@ -1,5 +1,6 @@
 class Solution(object):
     def combinationSum(self, candidates, target):
+        candidates.sort()
         output = []
         current = []
 
@@ -8,16 +9,13 @@ class Solution(object):
                 output.append(current[:])
                 return
 
-            if remaining < 0:
-                return
-
             for i in range(start, len(candidates)):
+                if candidates[i] > remaining:
+                    break
+
                 current.append(candidates[i])
-
                 backtrack(i, remaining - candidates[i])
-
                 current.pop()
 
         backtrack(0, target)
-
         return output
