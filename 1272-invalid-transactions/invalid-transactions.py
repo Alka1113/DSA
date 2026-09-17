@@ -1,32 +1,42 @@
 class Solution(object):
     def invalidTransactions(self, transactions):
-        invalid = []
+        data = []
+        groups = {}
 
-        for i in range(len(transactions)):
-            name1, time1, amount1, city1 = transactions[i].split(",")
-            time1 = int(time1)
-            amount1 = int(amount1)
+        for i, transaction in enumerate(transactions):
+            name, time, amount, city = transaction.split(",")
 
-            is_invalid = False
+            time = int(time)
+            amount = int(amount)
 
-            # Check amount
-            if amount1 > 1000:
-                is_invalid = True
+            data.append((name, time, amount, city, i))
 
-            # Compare with every other transaction
-            for j in range(len(transactions)):
-                if i == j:
-                    continue
+            if name not in groups:
+                groups[name] = []
 
-                name2, time2, amount2, city2 = transactions[j].split(",")
-                time2 = int(time2)
+            groups[name].append((time, city, i))
 
-                if (name1 == name2 and
-                    city1 != city2 and
-                    abs(time1 - time2) <= 60):
-                    is_invalid = True
+        invalid = set()
 
-            if is_invalid:
-                invalid.append(transactions[i])
+        for name in groups:
+            groups[name].sort()
 
-        return invalid
+            arr = groups[name]
+
+            for i in range(len(arr)):
+                time1, city1, index1 = arr[i]
+
+                if data[index1][2] > 1000:
+                    invalid.add(index1)
+
+                for j in range(i + 1, len(arr)):
+                    time2, city2, index2 = arr[j]
+
+                    if time2 - time1 > 60:
+                        break
+
+                    if city1 != city2:
+                        invalid.add(index1)
+                        invalid.add(index2)
+
+        return [transactions[i] for i in invalid]
