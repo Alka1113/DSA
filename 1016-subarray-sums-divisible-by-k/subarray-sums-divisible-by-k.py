@@ -9,7 +9,6 @@ class Solution(object):
             remainder = total % k
 
             count += seen.get(remainder, 0)
-
             seen[remainder] = seen.get(remainder, 0) + 1
 
         return count
